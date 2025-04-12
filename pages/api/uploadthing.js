@@ -1,4 +1,4 @@
-import { createUploadthing, createNextHandler } from "uploadthing/next";
+import { createUploadthing, createUploadthingHandler } from "uploadthing/server";
 
 const f = createUploadthing();
 
@@ -17,9 +17,7 @@ const fileRouter = {
     }),
 };
 
-export default createNextHandler({
-  router: fileRouter,
-});
+export default createUploadthingHandler({ router: fileRouter });
 
 export const config = {
   api: {
