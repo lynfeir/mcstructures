@@ -1,4 +1,5 @@
-import { createUploadthing, createUploadthingHandler } from "uploadthing/server";
+import { createUploadthing, createUploadthingExpressHandler } from 'uploadthing/express'; // use express version
+import { IncomingForm } from 'formidable';
 
 const f = createUploadthing();
 
@@ -17,10 +18,18 @@ const fileRouter = {
     }),
 };
 
-export default createUploadthingHandler({ router: fileRouter });
-
+// Actual handler
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: false, // important for uploads
   },
 };
+
+export default async function handler(req, res) {
+  if (req.method === 'POST' || req.method === 'GET') {
+    return createUploadthingExpressHandler({ router: fileRouter })(req, res);
+  } else {
+    res.setHeader('Allow', ['POST', 'GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
