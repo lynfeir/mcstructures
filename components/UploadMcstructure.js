@@ -7,7 +7,7 @@ export default function UploadMcstructure({ userId }) {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file first");
+      alert("Please select a file");
       return;
     }
 
@@ -21,16 +21,16 @@ export default function UploadMcstructure({ userId }) {
         },
       });
 
+      console.log("✅ Upload result:", res);
       setStatus("Upload complete ✅");
-      console.log("Uploaded file info:", res);
     } catch (err) {
-      console.error("Upload failed:", err);
+      console.error("❌ Upload failed:", err);
       setStatus("Upload failed ❌");
     }
   };
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: "1rem", marginTop: "1rem" }}>
+    <div>
       <input
         type="file"
         accept=".mcstructure"
@@ -38,20 +38,10 @@ export default function UploadMcstructure({ userId }) {
         style={{ marginBottom: "1rem" }}
       />
       <br />
-      <button
-        onClick={handleUpload}
-        disabled={!file}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#4f46e5",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
+      <button onClick={handleUpload} disabled={!file}>
         Upload
       </button>
-      <p style={{ marginTop: "1rem" }}>{status}</p>
+      <p>{status}</p>
     </div>
   );
 }
