@@ -1,11 +1,12 @@
-import { createUploadthing, createUploadthingExpressHandler } from 'uploadthing/express'; // use express version
-import { IncomingForm } from 'formidable';
+import { createUploadthing, createUploadthingHandler } from "uploadthing/server";
 
+// 1. Define the upload endpoint
 const f = createUploadthing();
 
 const fileRouter = {
   structureUploader: f({
-    mcstructure: { maxFileSize: "4MB" },
+    // Accept any file (like .mcstructure)
+    "application/octet-stream": { maxFileSize: "4MB" },
   })
     .middleware(async ({ req }) => {
       const userId = req.headers["x-user-id"];
@@ -18,18 +19,18 @@ const fileRouter = {
     }),
 };
 
-// Actual handler
+// 2. Setup the Next.js API route
 export const config = {
   api: {
-    bodyParser: false, // important for uploads
+    bodyParser: false, // Required for file uploads
   },
 };
 
 export default async function handler(req, res) {
-  if (req.method === 'POST' || req.method === 'GET') {
-    return createUploadthingExpressHandler({ router: fileRouter })(req, res);
-  } else {
-    res.setHeader('Allow', ['POST', 'GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  if (req.method !== "POST" && req.method !== "GET") {
+    res.setHeader("Allow", ["POST", "GET"]);
+    return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
+
+  return createUploadthingHandler({ router: fileRouter })(req, res);
 }
