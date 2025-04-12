@@ -1,12 +1,11 @@
 import { createUploadthing, createUploadthingHandler } from "uploadthing/server";
 
-// 1. Define the upload endpoint
+// Setup your endpoint config
 const f = createUploadthing();
 
 const fileRouter = {
   structureUploader: f({
-    // Accept any file (like .mcstructure)
-    "application/octet-stream": { maxFileSize: "4MB" },
+    "application/octet-stream": { maxFileSize: "4MB" }, // accepts .mcstructure files
   })
     .middleware(async ({ req }) => {
       const userId = req.headers["x-user-id"];
@@ -19,10 +18,10 @@ const fileRouter = {
     }),
 };
 
-// 2. Setup the Next.js API route
+// Required for Next.js to stream file uploads
 export const config = {
   api: {
-    bodyParser: false, // Required for file uploads
+    bodyParser: false,
   },
 };
 
@@ -32,5 +31,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
 
-  return createUploadthingHandler({ router: fileRouter })(req, res);
+  return createUploadthingHandler({
+    router: fileRouter,
+  })(req, res);
 }
