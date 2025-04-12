@@ -1,12 +1,10 @@
-import { createNextPageApiHandler } from "uploadthing/server";
-import { createUploadthing } from "uploadthing/server";
+import { createUploadthing, createNextPageApiHandler } from "uploadthing/server";
 
-// Setup
 const f = createUploadthing();
 
 const fileRouter = {
   structureUploader: f({
-    "application/octet-stream": { maxFileSize: "4MB" },
+    "application/octet-stream": { maxFileSize: "4MB" }, // .mcstructure is binary format
   })
     .middleware(async ({ req }) => {
       const userId = req.headers["x-user-id"];
@@ -19,12 +17,12 @@ const fileRouter = {
     }),
 };
 
+export const config = {
+  api: {
+    bodyParser: false, // crucial for streaming file uploads
+  },
+};
+
 export default createNextPageApiHandler({
   router: fileRouter,
 });
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
