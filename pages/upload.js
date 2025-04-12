@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../lib/firebase";
+import dynamic from "next/dynamic";
+
+const UploadMcstructure = dynamic(() => import("../components/UploadMcstructure"), { ssr: false });
 
 export default function UploadPage() {
   const [user, setUser] = useState(null);
@@ -12,14 +15,12 @@ export default function UploadPage() {
     return () => unsub();
   }, []);
 
-  if (!user) {
-    return <p style={{ padding: '1rem' }}>Please log in to upload.</p>;
-  }
+  if (!user) return <p>Please log in to upload.</p>;
 
   return (
-    <div style={{ padding: '1rem' }}>
+    <div style={{ padding: "1rem" }}>
       <h1>Welcome {user.email}</h1>
-      {/* Upload component will go here next */}
+      <UploadMcstructure userId={user.uid} />
     </div>
   );
 }
