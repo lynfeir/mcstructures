@@ -15,9 +15,15 @@ export default function Login() {
   const router = useRouter();
 
   useEffect(() => {
+    // Only run this on the client
+    if (typeof window === 'undefined') return;
+
     const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) router.push('/upload');
+      if (user) {
+        router.push('/upload');
+      }
     });
+
     return () => unsub();
   }, []);
 
@@ -35,30 +41,31 @@ export default function Login() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto' }}>
+    <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem', border: '1px solid #ccc' }}>
       <h2>{isLogin ? 'Login' : 'Register'}</h2>
       <input
+        type="email"
         placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
         value={email}
-        style={{ width: '100%', marginBottom: '10px' }}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
       />
       <input
-        placeholder="Password"
         type="password"
-        onChange={(e) => setPass(e.target.value)}
+        placeholder="Password"
         value={pass}
-        style={{ width: '100%', marginBottom: '10px' }}
+        onChange={(e) => setPass(e.target.value)}
+        style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
       />
-      <button onClick={handleSubmit}>
-        {isLogin ? 'Login' : 'Sign up'}
+      <button onClick={handleSubmit} style={{ width: '100%', padding: '10px', marginBottom: '10px' }}>
+        {isLogin ? 'Login' : 'Sign Up'}
       </button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <p
-        style={{ color: 'blue', cursor: 'pointer', marginTop: '10px' }}
         onClick={() => setIsLogin(!isLogin)}
+        style={{ color: 'blue', cursor: 'pointer', textAlign: 'center' }}
       >
-        {isLogin ? 'Need an account? Register' : 'Have an account? Log in'}
+        {isLogin ? 'Need an account? Register here' : 'Already have an account? Log in'}
       </p>
     </div>
   );
