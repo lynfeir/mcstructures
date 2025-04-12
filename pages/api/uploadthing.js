@@ -4,7 +4,8 @@ const f = createUploadthing();
 
 const fileRouter = {
   structureUploader: f({
-    "application/octet-stream": { maxFileSize: "4MB" }, // .mcstructure is binary format
+    // Accept .mcstructure as binary file
+    "application/octet-stream": { maxFileSize: "4MB" },
   })
     .middleware(async ({ req }) => {
       const userId = req.headers["x-user-id"];
@@ -19,7 +20,7 @@ const fileRouter = {
 
 export const config = {
   api: {
-    bodyParser: false, // crucial for streaming file uploads
+    bodyParser: false, // required for uploads to work
   },
 };
 
